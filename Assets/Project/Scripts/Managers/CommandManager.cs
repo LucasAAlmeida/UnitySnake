@@ -15,11 +15,22 @@ public class CommandManager : MonoBehaviour
 
     private List<ICommand> _commandBuffer = new List<ICommand>();
 
+    /// <summary>
+    /// Adds a new command to the list
+    /// </summary>
+    /// <param name="command"></param>
     public void AddCommand(ICommand command)
     {
         _commandBuffer.Insert(0, command);
     }
 
+    /// <summary>
+    /// Gets the command of given offset
+    /// In this game, each body segment will give an offset based on its position in the snake body
+    /// so that it can copy exactly what the head did
+    /// </summary>
+    /// <param name="offset"></param>
+    /// <returns></returns>
     public ICommand GetCommand(int offset)
     {
         if (_commandBuffer.Count <= offset) {

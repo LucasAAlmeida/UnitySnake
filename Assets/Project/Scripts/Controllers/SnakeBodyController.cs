@@ -10,7 +10,10 @@ public class SnakeBodyController : MonoBehaviour
         snakeHead = GameObject.Find("SnakeHead");
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame
+    /// Stops body movement if the game is over
+    /// </summary>
     void LateUpdate()
     {
         if (LevelManager.Instance.IsGameOver()) {
@@ -20,6 +23,10 @@ public class SnakeBodyController : MonoBehaviour
         MoveSnakeBody();
     }
 
+    /// <summary>
+    /// Knowing its position in the snake body, searches the correct command in the command list
+    /// and copies the exact movement that the head did
+    /// </summary>
     private void MoveSnakeBody()
     {
         int commandOffset = GetCommandOffset();
@@ -34,7 +41,7 @@ public class SnakeBodyController : MonoBehaviour
     private int GetCommandOffset()
     {
         float currentSpeed = snakeHead.GetComponent<SnakeHeadController>().speed;
-        int commandOffset = Mathf.FloorToInt(300 / currentSpeed);
+        int commandOffset = Mathf.FloorToInt(1000 / currentSpeed);
         return commandOffset;
     }
 }

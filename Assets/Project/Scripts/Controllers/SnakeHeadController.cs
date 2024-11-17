@@ -16,10 +16,12 @@ public class SnakeHeadController : MonoBehaviour
 
         HandleInput();
 
+        // Creates a new command, has the head execute it, then save it on the command list
         command = new MoveCommand(transform, direction, speed);
         command.Execute();
         CommandManager.Instance.AddCommand(command);
 
+        // deletes the commands that are too far gone compared to the snake body.
         var maxBufferSize = (bodySize + 1) * 300;
         if (CommandManager.Instance.GetCommandBufferSize() > maxBufferSize) {
             CommandManager.Instance.DeleteLastCommand();
@@ -39,6 +41,10 @@ public class SnakeHeadController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles Collision with apple (good); and also with body parts or wall (bad)
+    /// </summary>
+    /// <param name="other"></param>
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("SnakeBody") && other.gameObject.GetComponent<SnakeBodyController>().bodyPosition != 1) {
@@ -48,27 +54,35 @@ public class SnakeHeadController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// If the snake eats an apple, a sound effect plays, the snake's body grows, the score is updated and the snake's speed increases.
+    /// </summary>
+    /// <param name="other"></param>
     private void EatApple(Collider other)
     {
         AppleEatenEffects(other);
         GrowSnakeBody();
 
         LevelManager.Instance.AddScore(50);
-        speed += 0.2f;
+        speed += 0.5f;
     }
 
-    private void GrowSnakeBody()
-    {
-        bodySize++;
-        var snakeBody = Instantiate(snakeBodyPrefab);
-        snakeBody.GetComponent<SnakeBodyController>().bodyPosition = bodySize;
-    }
-
+    /// <summary>
+    /// Play sounds and moves the apple elsewhere
+    /// </summary>
+    /// <param name="other"></param>
     private static void AppleEatenEffects(Collider other)
     {
         var apple = other.gameObject.GetComponent<AppleController>();
         apple.PlaySound();
         apple.MoveApple();
+    }
+    
+    private void GrowSnakeBody()
+    {
+        bodySize++;
+        var snakeBody = Instantiate(snakeBodyPrefab);
+        snakeBody.GetComponent<SnakeBodyController>().bodyPosition = bodySize;
     }
 
     private void OnCollisionEnter(Collision collision)
